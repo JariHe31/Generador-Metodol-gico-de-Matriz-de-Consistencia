@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador Avanzado de Matriz y Títulos de Investigación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff0f3;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(214, 51, 132, 0.15);
+            width: 100%;
+            max-width: 950px;
+            border-top: 5px solid #d63384;
+        }
+        h2 {
+            color: #b02a63;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 15px;
+            color: #d63384;
+            border-bottom: 2px solid #f8d7da;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        label {
+            color: #555;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #f0a5b8;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: #d63384;
+            box-shadow: 0 0 5px rgba(214, 51, 132, 0.2);
+        }
+        .dim-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .dim-item {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-add, .btn-remove {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .btn-add {
+            background-color: #e83e8c;
+            color: white;
+            align-self: flex-start;
+        }
+        .btn-add:hover {
+            background-color: #d63384;
+        }
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-remove:hover {
+            background-color: #bd2130;
+        }
+        button.btn-main {
+            width: 100%;
+            padding: 12px;
+            background-color: #d63384;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        button.btn-main:hover {
+            background-color: #b02a63;
+        }
+        .validation-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+        }
+        .validation-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .validation-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-export {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-copy { background-color: #6c757d; }
+        .btn-copy:hover { background-color: #5a6268; }
+        .btn-word { background-color: #2b579a; }
+        .btn-word:hover { background-color: #1e3e6d; }
+        .btn-pdf { background-color: #d9534f; }
+        .btn-pdf:hover { background-color: #c9302c; }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #fff5f8;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            border: 1px solid #f8d7da;
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #b02a63;
+            font-size: 18px;
+            text-align: center;
+        }
+        .block-result {
+            margin-bottom: 15px;
+            background: #ffffff;
+            padding: 14px;
+            border-radius: 6px;
+            border-left: 4px solid #d63384;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .block-result h4 {
+            margin: 0 0 8px 0;
+            color: #b02a63;
+            font-size: 15px;
+        }
+        .block-result ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .matriz-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #ffffff;
+            font-size: 12px;
+        }
+        .matriz-table th, .matriz-table td {
+            border: 1px solid #d63384;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+        .matriz-table th {
+            background-color: #d63384;
+            color: white;
+            text-transform: uppercase;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #contenidoReporte, #contenidoReporte * { visibility: visible; }
+            #contenidoReporte { position: absolute; left: 0; top: 0; width: 100%; }
+            .export-actions { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Generador Metodológico de Investigación</h2>
+
+        <!-- Selección de Marco y Enfoque -->
+        <div class="section-title">1. Marco Metodológico y Enfoque</div>
+        
+        <div class="grid-row">
+            <label for="enfoqueMetodologico">Enfoque Metodológico:</label>
+            <select id="enfoqueMetodologico" onchange="adaptarInterfazEnfoque()">
+                <option value="cuantitativo">Cuantitativo</option>
+                <option value="cualitativo">Cualitativo</option>
+                <option value="mixto">Mixto</option>
+            </select>
+        </div>
+
+        <div class="grid-row">
+            <label for="autorMetodologia">Autor de Referencia:</label>
+            <select id="autorMetodologia">
+                <option value="varahorna">Arístides Vara Horna</option>
+                <option value="villanueva">Luis Villanueva</option>
+                <option value="sampieri">Hernández Sampieri</option>
+            </select>
+        </div>
+
+        <div class="grid-row">
+            <label for="tipoInvestigacion">Tipo / Nivel de Investigación:</label>
+            <select id="tipoInvestigacion" onchange="actualizarConectores()">
+                <option value="correlacional">Correlacional / Descriptivo-asociativo</option>
+                <option value="explicativo">Explicativo / Causal</option>
+            </select>
+        </div>
+
+        <div class="grid-row">
+            <label for="conectorVariables">Conector Principal (Título):</label>
+            <select id="conectorVariables">
+                <!-- Se llena dinámicamente -->
+            </select>
+        </div>
+
+        <!-- Variables / Categorías Dinámicas -->
+        <div class="section-title" id="tituloSeccionVars">2. Variables y Dimensiones</div>
+        
+        <div class="grid-row">
+            <label for="v1" id="labelV1">Variable 1:</label>
+            <input type="text" id="v1" placeholder="Ej: Clima organizacional">
+        </div>
+        <div class="grid-row">
+            <label id="labelDimV1">Dimensiones V1:</label>
+            <div class="dim-container" id="containerDimV1">
+                <div class="dim-item">
+                    <input type="text" class="dim-v1-input" placeholder="Dimensión 1 de V1">
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div></div>
+            <button class="btn-add" id="btnAddV1" onclick="agregarDimension('containerDimV1', 'dim-v1-input', 'Dimensión de V1')">+ Agregar Dimensión V1</button>
+        </div>
+
+        <div class="grid-row" style="margin-top: 15px;">
+            <label for="v2" id="labelV2">Variable 2:</label>
+            <input type="text" id="v2" placeholder="Ej: desempeño laboral">
+        </div>
+        <div class="grid-row">
+            <label id="labelDimV2">Dimensiones V2:</label>
+            <div class="dim-container" id="containerDimV2">
+                <div class="dim-item">
+                    <input type="text" class="dim-v2-input" placeholder="Dimensión 1 de V2">
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div></div>
+            <button class="btn-add" id="btnAddV2" onclick="agregarDimension('containerDimV2', 'dim-v2-input', 'Dimensión de V2')">+ Agregar Dimensión V2</button>
+        </div>
+
+        <!-- Configuración de Cantidad de Específicas -->
+        <div class="section-title">3. Cantidad de Elementos Específicos</div>
+        <div class="grid-row">
+            <label for="cantEspecificas">Cantidad de Específicas a Generar:</label>
+            <input type="number" id="cantEspecificas" min="1" max="10" value="3" placeholder="Ej: 3">
+        </div>
+
+        <!-- Población, Organización, Lugar, Año -->
+        <div class="section-title">4. Contexto de la Investigación</div>
+        <div class="grid-row">
+            <label for="poblacion">Población / Participantes:</label>
+            <input type="text" id="poblacion" placeholder="Ej: Estudiantes / Trabajadores">
+        </div>
+
+        <div class="grid-row">
+            <label for="organizacion">Organización / Empresa:</label>
+            <input type="text" id="organizacion" placeholder="Ej: Universidad Nacional">
+        </div>
+
+        <div class="grid-row">
+            <label for="lugar">Lugar:</label>
+            <input type="text" id="lugar" placeholder="Ej: Lima">
+        </div>
+
+        <div class="grid-row">
+            <label for="anio">Año:</label>
+            <input type="number" id="anio" placeholder="Ej: 2026">
+        </div>
+
+        <button class="btn-main" onclick="generarProyecto()">Generar Título y Matriz de Consistencia</button>
+
+        <div class="validation-box" id="boxValidacion"></div>
+
+        <div class="result" id="resultado">
+            Introduce los datos y presiona el botón para generar los resultados basados en la estructura del autor y enfoque seleccionado.
+        </div>
+    </div>
+
+    <script>
+        function adaptarInterfazEnfoque() {
+            const enfoque = document.getElementById('enfoqueMetodologico').value;
+            const tituloSeccionVars = document.getElementById('tituloSeccionVars');
+            const labelV1 = document.getElementById('labelV1');
+            const labelV2 = document.getElementById('labelV2');
+            const labelDimV1 = document.getElementById('labelDimV1');
+            const labelDimV2 = document.getElementById('labelDimV2');
+            const btnAddV1 = document.getElementById('btnAddV1');
+            const btnAddV2 = document.getElementById('btnAddV2');
+
+            if (enfoque === 'cualitativo') {
+                tituloSeccionVars.textContent = '2. Categorías y Subcategorías';
+                labelV1.textContent = 'Categoría 1:';
+                labelV2.textContent = 'Categoría 2:';
+                labelDimV1.textContent = 'Subcategorías C1:';
+                labelDimV2.textContent = 'Subcategorías C2:';
+                btnAddV1.textContent = '+ Agregar Subcategoría C1';
+                btnAddV2.textContent = '+ Agregar Subcategoría C2';
+            } else if (enfoque === 'mixto') {
+                tituloSeccionVars.textContent = '2. Variables / Categorías (Enfoque Mixto)';
+                labelV1.textContent = 'Variable/Categoría 1:';
+                labelV2.textContent = 'Variable/Categoría 2:';
+                labelDimV1.textContent = 'Dimensiones/Subcat C1:';
+                labelDimV2.textContent = 'Dimensiones/Subcat C2:';
+                btnAddV1.textContent = '+ Agregar Dim/Subcat 1';
+                btnAddV2.textContent = '+ Agregar Dim/Subcat 2';
+            } else {
+                tituloSeccionVars.textContent = '2. Variables y Dimensiones';
+                labelV1.textContent = 'Variable 1:';
+                labelV2.textContent = 'Variable 2:';
+                labelDimV1.textContent = 'Dimensiones V1:';
+                labelDimV2.textContent = 'Dimensiones V2:';
+                btnAddV1.textContent = '+ Agregar Dimensión V1';
+                btnAddV2.textContent = '+ Agregar Dimensión V2';
+            }
+        }
+
+        function actualizarConectores() {
+            const tipo = document.getElementById('tipoInvestigacion').value;
+            const selectConector = document.getElementById('conectorVariables');
+            selectConector.innerHTML = ""; 
+
+            let opciones = [];
+            if (tipo === "correlacional") {
+                opciones = ["y", "y su relación con", "asociado a"];
+            } else if (tipo === "explicativo") {
+                opciones = ["y su influencia en", "y su incidencia en", "y su impacto en"];
+            }
+
+            opciones.forEach(op => {
+                let opt = document.createElement('option');
+                opt.value = op;
+                opt.textContent = op;
+                selectConector.appendChild(opt);
+            });
+        }
+
+        function agregarDimension(containerId, inputClass, placeholderText) {
+            const container = document.getElementById(containerId);
+            const numDim = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'dim-item';
+            div.innerHTML = `
+                <input type="text" class="${inputClass}" placeholder="${placeholderText} ${numDim}">
+                <button class="btn-remove" onclick="eliminarDimension(this)">-</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function eliminarDimension(button) {
+            button.parentElement.remove();
+        }
+
+        window.onload = function() {
+            actualizarConectores();
+            adaptarInterfazEnfoque();
+        };
+
+        function esFemenino(texto) {
+            const limpio = texto.trim().toLowerCase();
+            return limpio.endsWith('a') || limpio.endsWith('as');
+        }
+
+        function obtenerValoresDimensiones(inputClass) {
+            const inputs = document.querySelectorAll('.' + inputClass);
+            let lista = [];
+            inputs.forEach(inp => {
+                const val = inp.value.trim();
+                if (val !== "") lista.push(val);
+            });
+            return lista;
+        }
+
+        function validarInsumos(v1, v2, dims1, dims2, cantEspecificas, enfoque) {
+            const box = document.getElementById('boxValidacion');
+            let msgs = [];
+
+            if (dims1.length === 0 || dims2.length === 0) {
+                msgs.push("⚠️ Se sugiere agregar al menos una dimensión/subcategoría por variable para construir adecuadamente las preguntas específicas.");
+            }
+            if (dims1.length !== dims2.length && dims1.length > 0 && dims2.length > 0) {
+                msgs.push("ℹ️ El número de dimensiones de V1 y V2 es desigual. El sistema reocupará secuencialmente los elementos.");
+            }
+            if (cantEspecificas > (dims1.length + dims2.length) && dims1.length > 0) {
+                msgs.push("ℹ️ Has solicitado más específicas que dimensiones ingresadas. Se usará un patrón iterativo de cruce.");
+            }
+
+            if (msgs.length > 0) {
+                box.className = "validation-box validation-warning";
+                box.innerHTML = "<b>Revisión Metodológica:</b><br>" + msgs.join("<br>");
+                box.style.display = "block";
+            } else {
+                box.className = "validation-box validation-success";
+                box.innerHTML = "<b>✓ Validación Correcta:</b> Todos los componentes presentan coherencia interna y estructural para el enfoque " + enfoque + ".";
+                box.style.display = "block";
+            }
+        }
+
+        function generarProyecto() {
+            const enfoque = document.getElementById('enfoqueMetodologico').value;
+            const autor = document.getElementById('autorMetodologia').value;
+            const tipo = document.getElementById('tipoInvestigacion').value;
+            const v1 = document.getElementById('v1').value.trim();
+            let v2 = document.getElementById('v2').value.trim();
+            const poblacion = document.getElementById('poblacion').value.trim();
+            const organizacion = document.getElementById('organizacion').value.trim();
+            const lugar = document.getElementById('lugar').value.trim();
+            const anio = document.getElementById('anio').value.trim();
+            let conectorElegido = document.getElementById('conectorVariables').value;
+            const cantEspecificas = parseInt(document.getElementById('cantEspecificas').value) || 1;
+
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (!v1 || !v2 || !poblacion || !organizacion || !lugar || !anio) {
+                resultadoDiv.innerHTML = "<span style='color: #b02a63; font-weight: bold;'>Por favor, completa los campos principales (Variables/Categorías, Población, Organización, Lugar y Año).</span>";
+                return;
+            }
+
+            const dimensiones1 = obtenerValoresDimensiones('dim-v1-input');
+            const dimensiones2 = obtenerValoresDimensiones('dim-v2-input');
+
+            validarInsumos(v1, v2, dimensiones1, dimensiones2, cantEspecificas, enfoque);
+
+            v2 = v2.charAt(0).toLowerCase() + v2.slice(1);
+            if (conectorElegido === "y") {
+                const v2Minus = v2.toLowerCase();
+                if (v2Minus.startsWith('i') || v2Minus.startsWith('hi')) {
+                    conectorElegido = "e";
+                }
+            }
+
+            const artV1 = esFemenino(v1) ? "La" : "El";
+            const artV2 = esFemenino(v2) ? "la" : "el";
+            const conectorPob = esFemenino(poblacion) ? "en las" : "en los";
+            const conectorOrg = esFemenino(organizacion) ? "de la" : "del";
+
+            const bloqueVariables = `${artV1} ${v1} ${conectorElegido} ${artV2} ${v2}`;
+            let tituloFinal = `${bloqueVariables} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion} en ${lugar}, ${anio}`;
+            tituloFinal = tituloFinal.charAt(0).toUpperCase() + tituloFinal.slice(1);
+
+            let textoPreguntaGeneral = "";
+            let textoObjetivoGeneral = "";
+            let textoHipotesisGeneral = "";
+            let listaPreguntasEsp = [];
+            let listaObjetivosEsp = [];
+            let listaHipotesisEsp = [];
+
+            if (autor === "varahorna") {
+                if (enfoque === "cualitativo") {
+                    textoPreguntaGeneral = `¿Cómo se manifiestan y comprenden la categoría ${v1} y la categoría ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}?`;
+                    textoObjetivoGeneral = `Comprender e interpretar la categoría ${v1} y la categoría ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}.`;
+                    textoHipotesisGeneral = `Supuesto teórico: La categoría ${v1} se articula cualitativamente con la dinámica de ${v2} en las vivencias de ${conectorPob} ${poblacion}.`;
+                } else if (tipo === "correlacional") {
+                    textoPreguntaGeneral = `¿De qué manera ${artV1.toLowerCase()} ${v1} se relaciona con ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}?`;
+                    textoObjetivoGeneral = `Determinar el grado de relación entre ${artV1.toLowerCase()} ${v1} y ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}.`;
+                    textoHipotesisGeneral = `Existe una relación directa y significativa entre ${artV1.toLowerCase()} ${v1} y ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}.`;
+                } else {
+                    textoPreguntaGeneral = `¿De qué manera influye ${artV1.toLowerCase()} ${v1} en ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}?`;
+                    textoObjetivoGeneral = `Demostrar el impacto explicativo de ${artV1.toLowerCase()} ${v1} sobre ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}.`;
+                    textoHipotesisGeneral = `${artV1} ${v1} influye de manera significativa y directa en ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar}, ${anio}.`;
+                }
+            } else if (autor === "sampieri") {
+                if (enfoque === "cualitativo") {
+                    textoPreguntaGeneral = `¿Cuáles son los significados y experiencias asociados a ${v1} y ${v2} en ${conectorPob} ${poblacion} de ${organizacion} (${lugar}, ${anio})?`;
+                    textoObjetivoGeneral = `Explorar las experiencias sobre ${v1} y ${v2} en ${conectorPob} ${poblacion} de ${organizacion} (${lugar}, ${anio}).`;
+                    textoHipotesisGeneral = `Proposición cualitativa: Las percepciones de ${v1} reconfiguran el significado asignado a ${v2}.`;
+                } else if (tipo === "correlacional") {
+                    textoPreguntaGeneral = `¿Cuál es la relación que existe entre ${artV1.toLowerCase()} ${v1} y ${artV2} ${v2} en los ${poblacion} de ${organizacion} (${lugar}, ${anio})?`;
+                    textoObjetivoGeneral = `Evaluar la relación entre ${artV1.toLowerCase()} ${v1} y ${artV2} ${v2} en los ${poblacion} de ${organizacion} (${lugar}, ${anio}).`;
+                    textoHipotesisGeneral = `A mayor nivel de ${v1}, mayor será el nivel de ${v2} en los ${poblacion} de ${organizacion}.`;
+                } else {
+                    textoPreguntaGeneral = `¿De qué modo ${artV1.toLowerCase()} ${v1} determina el comportamiento de ${artV2} ${v2} en los ${poblacion} de ${organizacion} (${lugar}, ${anio})?`;
+                    textoObjetivoGeneral = `Explicar el efecto de ${artV1.toLowerCase()} ${v1} en ${artV2} ${v2} en los ${poblacion} de ${organizacion} (${lugar}, ${anio}).`;
+                    textoHipotesisGeneral = `${artV1} ${v1} produce un efecto directo sobre el incremento/decremento de ${artV2} ${v2} en los ${poblacion}.`;
+                }
+            } else {
+                if (enfoque === "cualitativo") {
+                    textoPreguntaGeneral = `¿De qué modo se interpretan la categoría ${v1} y la categoría ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}?`;
+                    textoObjetivoGeneral = `Analizar cualitativamente la categoría ${v1} y la categoría ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}.`;
+                    textoHipotesisGeneral = `Supuesto cualitativo: Los patrones conceptuales de ${v1} convergen con la interpretación de ${v2}.`;
+                } else if (tipo === "correlacional") {
+                    textoPreguntaGeneral = `¿En qué medida se vincula ${artV1.toLowerCase()} ${v1} con ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}?`;
+                    textoObjetivoGeneral = `Establecer la asociación entre ${artV1.toLowerCase()} ${v1} y ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}.`;
+                    textoHipotesisGeneral = `${artV1} ${v1} se asocia de forma directa con ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}.`;
+                } else {
+                    textoPreguntaGeneral = `¿En qué medida la presencia de ${artV1.toLowerCase()} ${v1} genera cambios en ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}?`;
+                    textoObjetivoGeneral = `Comprobar la incidencia de ${artV1.toLowerCase()} ${v1} en ${artV2} ${v2} ${conectorPob} ${poblacion} ${conectorOrg} ${organizacion}, ${lugar} - ${anio}.`;
+                    textoHipotesisGeneral = `La variabilidad de ${artV2} ${v2} es explicada por la influencia de ${artV1.toLowerCase()} ${v1} ${conectorPob} ${poblacion}.`;
+                }
+            }
+
+            for (let i = 0; i < cantEspecificas; i++) {
+                let d1 = dimensiones1[i % (dimensiones1.length || 1)] || `Dimensión/Subcategoría ${i + 1}`;
+                let d2 = dimensiones2[i % (dimensiones2.length || 1)] || `Dimensión/Subcategoría ${i + 1}`;
+
+                if (enfoque === "cualitativo") {
+                    listaPreguntasEsp.push(`¿Cómo se caracteriza y experimenta la subcategoría ${d1} frente a ${d2} ${conectorPob} ${poblacion}?`);
+                    listaObjetivosEsp.push(`Describir e interpretar la subcategoría ${d1} en relación con ${d2} ${conectorPob} ${poblacion}.`);
+                    listaHipotesisEsp.push(`Supuesto específico ${i+1}: La subcategoría ${d1} condiciona la percepción cualitativa de ${d2}.`);
+                } else if (tipo === "correlacional") {
+                    listaPreguntasEsp.push(`¿De qué manera la dimensión ${d1} se relaciona con la dimensión ${d2} ${conectorPob} ${poblacion}?`);
+                    listaObjetivosEsp.push(`Determinar la relación específica entre la dimensión ${d1} y la dimensión ${d2} ${conectorPob} ${poblacion}.`);
+                    listaHipotesisEsp.push(`La dimensión ${d1} se relaciona significativamente con la dimensión ${d2} ${conectorPob} ${poblacion}.`);
+                } else {
+                    listaPreguntasEsp.push(`¿De qué manera la dimensión ${d1} influye en la dimensión ${d2} ${conectorPob} ${poblacion}?`);
+                    listaObjetivosEsp.push(`Demostrar la influencia específica de la dimensión ${d1} sobre la dimensión ${d2} ${conectorPob} ${poblacion}.`);
+                    listaHipotesisEsp.push(`La dimensión ${d1} influye significativamente en la dimensión ${d2} ${conectorPob} ${poblacion}.`);
+                }
+            }
+
+            let htmlPregEsp = "<ul>" + listaPreguntasEsp.map(p => `<li>${p}</li>`).join('') + "</ul>";
+            let htmlObjEsp = "<ul>" + listaObjetivosEsp.map(o => `<li>${o}</li>`).join('') + "</ul>";
+            let htmlHipEsp = "<ul>" + listaHipotesisEsp.map(h => `<li>${h}</li>`).join('') + "</ul>";
+
+            let filasMatriz = `
+                <tr>
+                    <td><b>General:</b><br>${textoPreguntaGeneral}<br><br><b>Específicos:</b><br>${listaPreguntasEsp.map((p, idx) => `<b>PE${idx+1}:</b> ${p}`).join('<br>')}</td>
+                    <td><b>General:</b><br>${textoObjetivoGeneral}<br><br><b>Específicos:</b><br>${listaObjetivosEsp.map((o, idx) => `<b>OE${idx+1}:</b> ${o}`).join('<br>')}</td>
+                    <td><b>General:</b><br>${textoHipotesisGeneral}<br><br><b>Específicos:</b><br>${listaHipotesisEsp.map((h, idx) => `<b>HE${idx+1}:</b> ${h}`).join('<br>')}</td>
+                    <td><b>V1/C1:</b> ${v1}<br><br><b>V2/C2:</b> ${v2}</td>
+                    <td><b>Dims C1/V1:</b><br>${dimensiones1.length > 0 ? dimensiones1.join(', ') : 'S/D'}<br><br><b>Dims C2/V2:</b><br>${dimensiones2.length > 0 ? dimensiones2.join(', ') : 'S/D'}</td>
+                    <td><b>Diseño:</b> ${tipo === 'correlacional' ? 'No experimental - Correlacional' : 'Explicativo / Causal'}<br><b>Enfoque:</b> ${enfoque.toUpperCase()}<br><b>Población:</b> ${poblacion}<br><b>Muestra:</b> Probabilística / Intencional</td>
+                </tr>
+            `;
+
+            let nombreAutorTexto = autor === "varahorna" ? "Arístides Vara Horna" : (autor === "villanueva" ? "Luis Villanueva" : "Hernández Sampieri");
+
+            resultadoDiv.innerHTML = `
+                <div id="contenidoReporte">
+                    <h3>Reporte Metodológico y Matriz de Consistencia</h3>
+                    <p style="text-align:center;"><b>Autor de Referencia:</b> ${nombreAutorTexto} | <b>Enfoque:</b> ${enfoque.toUpperCase()}</p>
+                    
+                    <div class="block-result">
+                        <h4>1. Título Sugerido de Investigación:</h4>
+                        <p><b>${tituloFinal}</b></p>
+                    </div>
+
+                    <div class="block-result">
+                        <h4>2. Problemas de Investigación:</h4>
+                        <p><b>Problema General:</b> ${textoPreguntaGeneral}</p>
+                        <p><b>Problemas Específicos:</b></p>
+                        ${htmlPregEsp}
+                    </div>
+
+                    <div class="block-result">
+                        <h4>3. Objetivos de Investigación:</h4>
+                        <p><b>Objetivo General:</b> ${textoObjetivoGeneral}</p>
+                        <p><b>Objetivos Específicos:</b></p>
+                        ${htmlObjEsp}
+                    </div>
+
+                    <div class="block-result">
+                        <h4>4. Hipótesis / Supuestos de Investigación:</h4>
+                        <p><b>Hipótesis General:</b> ${textoHipotesisGeneral}</p>
+                        <p><b>Hipótesis Específicas:</b></p>
+                        ${htmlHipEsp}
+                    </div>
+
+                    <div class="block-result">
+                        <h4>5. Tabla: Matriz de Consistencia Técnica</h4>
+                        <table class="matriz-table">
+                            <thead>
+                                <tr>
+                                    <th>Problemas</th>
+                                    <th>Objetivos</th>
+                                    <th>Hipótesis / Supuestos</th>
+                                    <th>Variables / Categorías</th>
+                                    <th>Dimensiones / Subcat.</th>
+                                    <th>Metodología</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filasMatriz}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="export-actions">
+                    <button class="btn-export btn-copy" onclick="copiarTexto()">Copiar Texto</button>
+                    <button class="btn-export btn-word" onclick="descargarWord()">Descargar Word</button>
+                    <button class="btn-export btn-pdf" onclick="descargarPDF()">Exportar / Imprimir PDF</button>
+                </div>
+            `;
+        }
+
+        function copiarTexto() {
+            const contenido = document.getElementById('contenidoReporte').innerText;
+            navigator.clipboard.writeText(contenido).then(() => {
+                alert("¡Matriz y reporte copiados al portapapeles!");
+            });
+        }
+
+        function descargarWord() {
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+                "xmlns='http://www.w3.org/TR/REC-html40'>" +
+                "<head><meta charset='utf-8'><title>Matriz de Consistencia</title></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + document.getElementById("contenidoReporte").innerHTML + footer;
+
+            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            const fileDownload = document.createElement("a");
+            document.body.appendChild(fileDownload);
+            fileDownload.href = source;
+            fileDownload.download = 'Matriz_de_Consistencia.doc';
+            fileDownload.click();
+            document.body.removeChild(fileDownload);
+        }
+
+        function descargarPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
